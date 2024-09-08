@@ -1,0 +1,98 @@
+C51 COMPILER V9.51   BTEST                                                                 09/05/2024 23:41:03 PAGE 1   
+
+
+C51 COMPILER V9.51, COMPILATION OF MODULE BTEST
+OBJECT MODULE PLACED IN btest.OBJ
+COMPILER INVOKED BY: D:\keil\C51\BIN\C51.EXE btest.c BROWSE INCDIR(..\..\»ù´¡±à³Ì\inc) DEBUG OBJECTEXTEND TABS(2)
+
+line level    source
+
+   1          #include "STC15F2K60S2.H"        
+   2          #include "sys.H"                 
+   3          #include "Key.h"
+   4          #include "displayer.H" 
+   5          #include "music.H"
+   6          #include "beep.H"
+   7          #include "adc.H"
+   8          #include "ext.H"
+   9          #include "hall.H"
+  10          #include "ir.H"
+  11          #include "stepmotor.H"
+  12          #include "vib.H"
+  13          #include "FM_Radio.H"
+  14          #include "DS1302.H"
+  15          #include "M24C02.H"
+  16          #include "uart1.H"
+  17          #include "uart2.H"
+  18          
+  19          code unsigned long SysClock=11059200;         
+  20          #ifdef _displayer_H_                          //ÏÔÊ¾Ä£¿éÑ¡ÓÃÊ±±ØÐë¡££¨ÊýÂë¹ÜÏÔÊ¾ÒëÂë±í£¬ÓÃ‘ô¿ÉÐÞ¸Ä¡¢Ôö¼ÓµÈ
+             -£© 
+  21          code char decode_table[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x00,0x08,0x40,0x01, 0x41, 0x4
+             -8, 
+  22                          /* ÐòºÅ:   0   1    2    3    4     5    6    7   8    9   10    11   12   13    14     15    
+             - */
+  23                          /* ÏÔÊ¾:   0   1    2    3    4     5    6    7   8    9  (ÎÞ)   ÏÂ-  ÖÐ-  ÉÏ-  ÉÏÖÐ-  ÖÐÏ
+             -Â-   */  
+  24                                    0x3f|0x80,0x06|0x80,0x5b|0x80,0x4f|0x80,0x66|0x80,0x6d|0x80,0x7d|0x80,0x07|0x80,0
+             -x7f|0x80,0x6f|0x80,   
+  25                       /* ´øÐ¡Êýµã     0         1         2         3         4         5         6         7      
+             -   8         9        */
+  26                                    0x76,0x38};
+  27          #endif
+  28          
+  29          xdata unsigned char buffer[30],re[30],*match;
+  30          unsigned int send=9,recive=12;
+  31          
+  32          void addData()
+  33          {
+  34   1        Seg7Print(12,12,12,12,12,12,12,1);
+  35   1        Uart1Print(buffer,send);
+  36   1        Uart2Print(buffer,send);
+  37   1      }
+  38          
+  39          void reData()
+  40          {
+  41   1        LedPrint(1);
+  42   1        Uart1Print(re,recive);
+  43   1      }
+  44          
+  45          void main()
+  46          {
+  47   1        
+  48   1        Uart1Init(9600);
+  49   1        Uart2Init(9600,Uart2UsedforEXT);
+C51 COMPILER V9.51   BTEST                                                                 09/05/2024 23:41:03 PAGE 2   
+
+  50   1        DisplayerInit();
+  51   1        
+  52   1        LedPrint(0);
+  53   1        SetDisplayerArea(0,7);
+  54   1        Seg7Print(12,12,12,12,12,12,12,12);
+  55   1        
+  56   1        SetUart1Rxd(buffer,send,match,0);
+  57   1        SetEventCallBack(enumEventUart1Rxd,addData);
+  58   1        
+  59   1        SetUart2Rxd(re,recive,match,0);
+  60   1        SetEventCallBack(enumEventUart2Rxd,reData);
+  61   1        
+  62   1        MySTC_Init();
+  63   1        while(1)
+  64   1        {
+  65   2          MySTC_OS();
+  66   2        }
+  67   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    228    ----
+   CONSTANT SIZE    =     32    ----
+   XDATA SIZE       =     63    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
